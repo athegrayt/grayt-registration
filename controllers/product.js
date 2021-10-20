@@ -2,7 +2,6 @@ const formidable = require("formidable")
 const fs = require('fs')
 const { errorHandler } = require("../helpers/dbErrorsHandler")
 const { populate } = require("../models/product")
-const product = require("../models/product")
 const Product = require("../models/product")
 
 exports.productById = (req, res, next, id) => {

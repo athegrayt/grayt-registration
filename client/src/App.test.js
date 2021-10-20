@@ -5,13 +5,14 @@ import React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { MemoryRouter } from 'react-router'
 import '@testing-library/jest-dom/extend-expect'
-import Routes from '../Routes'
+import App from './App'
+
 
 test('home page renders', () => {
     const history = createMemoryHistory()
     const { getByText } = render(
         <Router history={ history }>
-            <Routes />
+            <App />
         </Router>);
   const homeContent = getByText(/home/);
   expect(homeContent).toBeInTheDocument();
@@ -21,7 +22,7 @@ test('signin page renders', () => {
     history.push('/signup')
     const { getByText } = render(
         <Router history={ history }>
-            <Routes />
+            <App />
         </Router>);
   const signupContent = getByText(/signup/i);
   expect(signupContent).toBeInTheDocument();

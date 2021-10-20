@@ -4,12 +4,12 @@ import { createMemoryHistory } from 'history'
 import React from 'react'
 import { Router } from 'react-router-dom'
 import '@testing-library/jest-dom/extend-expect'
-import Routes from '../../Routes'
+import App from '../../App'
 
 test('active link changes color', () => {
     const history = createMemoryHistory()
     const { getByText, getByTestId } = render(
-        <Routes  />
+        <App  />
     );
   const homeMenuContent = getByText("Home");
   expect(homeMenuContent).toHaveStyle(`color: 'red'`);

@@ -4,11 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon start.js",
+    "start": "node server.js",
+    "build":"cd client && npm run build",
+    "server": "nodemon server.js --ignore './client'",
+    "client": "cd client && npm run start",
+    "install-client": "cd client && npm install",
+    "heroku-postbuild": "npm run install-client && npm run build",
     "test": "jest --detectOpenHandles --forceExit --watch"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": ["./client"]
   },
   "author": "",
   "license": "ISC",
@@ -29,7 +35,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
-    "jest": "^26.6.3",
+    "jest": "^27.2.4",
     "supertest": "^6.1.3"
   }
 }

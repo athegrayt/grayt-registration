@@ -33,4 +33,10 @@ app.use('/api',userRoutes)
 app.use('/api',categoryRoutes)
 app.use('/api',productRoutes)
 
+if (process.env.NODE_ENV === 'production') {
+	app.use(express.static('client/build'));
+
+}
+
+
 module.exports = app
