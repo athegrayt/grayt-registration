@@ -1,1 +1,10 @@
-module.exports = ["MochaScript", "Python", "C#", "Go", "SQL", "JavaScript", "PHP", "Node"]
+module.exports = [
+  'MochaScript',
+  'Python',
+  'C#',
+  'Go',
+  'SQL',
+  'JavaScript',
+  'PHP',
+  'Node',
+];
