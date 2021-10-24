@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const crypto = require('crypto');
 const uuidv1 = require('uuid');
 const { encryptPassword } = require('../helpers/dbPasswordEncryption');
 
@@ -44,14 +43,14 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-//virtual field
+// virtual field
 
 userSchema
   .virtual('password')
   .set(function (password) {
     this._password = password;
     this.salt = uuidv1.v1();
-    this.hashed_password = encryptPassword(password);
+    this.hashed_password = encryptPassword(password, this.salt);
   })
   .get(function () {
     return this._password;
@@ -59,7 +58,7 @@ userSchema
 
 userSchema.methods = {
   authenticate: function (plainText) {
-    return encryptPassword(plainText) === this.hashed_password;
+    return encryptPassword(plainText, this.salt) === this.hashed_password;
   },
 };
 

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
-import Layout from '../core/Layout';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { signin } from '../auth';
-import { LinearProgress } from '@material-ui/core';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { signin } from '../../auth';
+import { Avatar, LinearProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { authenticate } from '../auth';
+import { authenticate } from '../../auth';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -64,6 +64,12 @@ const Signin = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
         <form
           className={classes.form}
           onSubmit={(e) => handleSubmit(e)}
@@ -92,10 +98,11 @@ const Signin = () => {
           <TextField
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            error={(error && error.includes('password'))}
+            error={error && error.includes('password')}
             helperText={
-              ((error && error.includes('password')) &&
-              (error || `Password is required`))
+              error &&
+              error.includes('password') &&
+              (error || `Password is required`)
             }
             margin="normal"
             variant="outlined"
@@ -138,18 +145,11 @@ const Signin = () => {
           </Grid>
         </form>
       </div>
+      {redirect && <Redirect to="/" />}
     </Container>
   );
 
-  return (
-    <Layout
-      title="Signin"
-      description="Signin to the Node React E-commerce App"
-    >
-      {signinForm()}
-      {redirect && <Redirect to="/" />}
-    </Layout>
-  );
+  return signinForm();
 };
 
 export default Signin;

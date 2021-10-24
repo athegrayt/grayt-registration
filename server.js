@@ -8,14 +8,12 @@ const cors = require('cors');
 const expressValidator = require('express-validator');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
-const categoryRoutes = require('./routes/category');
-const productRoutes = require('./routes/product');
 
 const port = process.env.PORT || 8000;
 const app = express();
 // db
 mongoose
-  .connect(process.env.MONGO_URI_TEST, {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -37,8 +35,6 @@ app.use(cors());
 // route middleware
 app.use('/api', authRoutes);
 app.use('/api', userRoutes);
-app.use('/api', categoryRoutes);
-app.use('/api', productRoutes);
 
 app.use(express.static(path.join(__dirname, './client/build')));
 app.get('*', (req, res) => {

@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
-import Layout from '../core/Layout';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { signup } from '../auth';
-import { LinearProgress } from '@material-ui/core';
+import { signup } from '../../auth';
+import { Avatar, LinearProgress, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -69,6 +69,12 @@ const Signup = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign up
+        </Typography>
         <form
           className={classes.form}
           noValidate
@@ -141,7 +147,8 @@ const Signup = () => {
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 error={error && error.includes('password')}
                 helperText={
-                  ((error && error.includes('Password'))) &&
+                  error &&
+                  error.includes('Password') &&
                   (error || `Password is required`)
                 }
                 variant="outlined"
@@ -180,18 +187,11 @@ const Signup = () => {
           </Grid>
         </form>
       </div>
+      {redirect && <Redirect to="/" />}
     </Container>
   );
 
-  return (
-    <Layout
-      title="Signup"
-      description="Signup for the Node React E-commerce App"
-    >
-      {signUpForm()}
-      {redirect && <Redirect to="/" />}
-    </Layout>
-  );
+  return signUpForm()
 };
 
 export default Signup;

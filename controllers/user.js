@@ -9,7 +9,7 @@ exports.userById = (req, res, next, id) => {
       });
     }
     req.profile = user;
-    next();
+    return next();
   });
 };
 
@@ -26,14 +26,15 @@ exports.update = (req, res) => {
     { $set: req.body },
     { new: true },
     (err, user) => {
+      const updateUser = user;
       if (err) {
         return res.status(400).json({
           error: 'You are not authorized to perform this action.',
         });
       }
-      user.hashed_password = undefined;
-      user.salt = undefined;
-      res.json(user);
+      updateUser.hashed_password = undefined;
+      updateUser.salt = undefined;
+      return res.json(user);
     }
   );
 };

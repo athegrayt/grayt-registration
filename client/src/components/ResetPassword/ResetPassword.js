@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, Redirect, useParams } from 'react-router-dom';
-import Layout from '../core/Layout';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { resetPassword, verifyLink, signout } from '../auth';
+import { resetPassword, verifyLink, signout } from '../../auth';
 import { LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -145,18 +144,11 @@ const ResetPassword = () => {
           </Grid>
         </form>
       </div>
+      {redirect && <Redirect to="/" />}
     </Container>
   );
 
-  return (
-    <Layout
-      title="Reset Password"
-      description="Please enter your new password and click submit."
-    >
-      {resetPasswordForm()}
-      {redirect && <Redirect to="/" />}
-    </Layout>
-  );
+  return resetPasswordForm()
 };
 
 export default ResetPassword;

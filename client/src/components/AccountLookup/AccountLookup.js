@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
-import Layout from '../core/Layout';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { accountLookup} from '../auth';
+import { accountLookup} from '../../auth';
 import { LinearProgress} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { authenticate } from '../auth';
+import { authenticate } from '../../auth';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -109,18 +108,11 @@ const AccountLookup = () => {
           </Grid>
         </form>
       </div>
+      {redirect && <Redirect to="/" />}
     </Container>
   );
 
-  return (
-    <Layout
-      title="Let's find your account!"
-      description="Enter your account email and we will send you a link to reset your password!"
-    >
-      {accountLookupForm()}
-      {redirect && <Redirect to="/" />}
-    </Layout>
-  );
+  return accountLookupForm()
 };
 
 export default AccountLookup;

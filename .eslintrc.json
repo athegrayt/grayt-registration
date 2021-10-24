@@ -12,6 +12,8 @@
   "rules": {
     "prettier/prettier": "error",
     "no-unused-vars": "warn",
-    "prefer-destructuring": "warn"
+    "prefer-destructuring": "warn", 
+    "object-shorthand":"off", 
+    "no-underscore-dangle":"off"
   }
 }

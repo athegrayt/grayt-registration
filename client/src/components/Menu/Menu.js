@@ -8,8 +8,8 @@ import {
   ListItemText,
   Toolbar,
 } from '@material-ui/core';
-import { signout } from '../auth';
-import { isAuthenticated } from '../auth';
+import { signout } from '../../auth';
+import { isAuthenticated } from '../../auth';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -39,15 +39,6 @@ const Menu = (props) => {
       <AppBar elevation={0}>
         <Toolbar>
           <List className={classes.menuBar}>
-            <ListItem
-              key="Home"
-              data-testid="menu-Home"
-              button
-              onClick={() => history.push('/')}
-              className={location.pathname === '/' && classes.isActive}
-            >
-              <ListItemText primary="Home" />
-            </ListItem>
             {!isAuthenticated() && (
                 <ListItem
                   key="Register"
