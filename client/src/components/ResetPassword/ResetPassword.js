@@ -1,7 +1,4 @@
-import React, {
-  useState,
-  useEffect
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, Redirect, useParams } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,11 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { LinearProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  resetPassword,
-  verifyLink,
-  signout,
-} from '../../auth';
+import { resetPassword, verifyLink, signout } from '../../auth';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,10 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ResetPassword = () => {
   const classes = useStyles();
-  const {
-    id,
-    // token
-  } = useParams();
+  const { id, token } = useParams();
   const [form, setForm] = useState({
     password: '',
     passwordVerify: '',
