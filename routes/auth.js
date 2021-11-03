@@ -18,7 +18,7 @@ router.post('/signup', userFormValidator, signup);
 router.post('/signin', userFormValidator, signin);
 router.get('/signout', signout);
 router.post('/account-lookup', userFormValidator, accountLookup);
-router.get('/reset-password/:id/auth/:token', verifyLink);
+router.get('/reset-password/:id/:token', verifyLink);
 router.put(
   '/reset-password/:userId',
   linkSignin,

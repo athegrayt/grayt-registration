@@ -1,6 +1,6 @@
 import React, {
   useState,
-  // useEffect
+  useEffect
 } from 'react';
 import { Link as RouterLink, Redirect, useParams } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
@@ -13,7 +13,7 @@ import { LinearProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   resetPassword,
-  // verifyLink,
+  verifyLink,
   signout,
 } from '../../auth';
 
@@ -51,9 +51,9 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
-  // useEffect(() => {
-  //   verifyLink(id, token);
-  // }, []);
+  useEffect(() => {
+    verifyLink(id, token);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

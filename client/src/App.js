@@ -3,7 +3,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  // Redirect,
+  Redirect,
 } from 'react-router-dom';
 import Auth from './components/Auth/Auth';
 import AccountLookup from './components/AccountLookup/AccountLookup';
@@ -34,10 +34,10 @@ const App = () => {
               <Route path="/auth" component={Auth} />
               <Route path="/account-lookup" component={AccountLookup} />
               <Route
-                path="/reset-password/:id/auth/:token"
+                path="/reset-password/:id/:token"
                 component={ResetPassword}
               />
-              {/* <Redirect to="/auth" /> */}
+              <Redirect to="/auth" />
             </Fragment>
           )}
         </Menu>

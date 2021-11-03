@@ -7,7 +7,7 @@ exports.sendEmail = async ({ email, message, link }) => {
       to: email,
       from: 'graytcommerce@gmail.com',
       subject: 'Graytcommerce Password Reset',
-      text: message,
+      text: `${message}`,
       html: `<strong>${link}</strong>`,
     };
     await sgMail.send(msg);

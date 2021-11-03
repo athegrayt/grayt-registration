@@ -41,7 +41,7 @@ export const accountLookup = (email) =>
     .catch((error) => error);
 
 export const verifyLink = (id, token) =>
-  fetch(`api/reset-password/${id}/auth/${token}`, {
+  fetch(`api/reset-password/${id}/${token}`, {
     method: 'GET',
   })
     .then((res) => {
@@ -53,7 +53,7 @@ export const verifyLink = (id, token) =>
     });
 
 export const resetPassword = (id, password, passwordVerify) =>
-  fetch(`http://localhost:8000/api/reset-password/${id}`, {
+  fetch(`/api/reset-password/${id}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',

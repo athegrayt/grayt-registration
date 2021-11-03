@@ -7,8 +7,6 @@ const User = require('../models/user');
 const { errorHandler } = require('../helpers/dbErrorsHandler');
 const { encryptPassword } = require('../helpers/dbPasswordEncryption');
 
-const { SERVER } = '../../ecommerce-frontend/src/config.js';
-
 exports.signup = async (req, res) => {
   const userData = req.body;
   userData.salt = uuidv1.v1();
@@ -18,8 +16,8 @@ exports.signup = async (req, res) => {
   );
 
   const user = User(userData);
-  return user.save((error, userData) => {
-    const newUser = userData;
+  return user.save((error, data) => {
+    const newUser = data;
     if (error) {
       return res.status(400).json({
         error: errorHandler(error),
@@ -91,7 +89,7 @@ exports.accountLookup = (req, res) => {
         const noAccountData = {
           email,
           message: `We don't seem to have that email in our database. Please signup!`,
-          link: `<a href="${SERVER}/signup">Create a new account.</a>`,
+          link: `<a href="https://graytcommerce-registration.herokuapp.com/auth">Create a new account.</a>`,
         };
         const sendNoAccountEmail = await sendEmail(noAccountData);
         res.json(sendNoAccountEmail);
@@ -105,7 +103,7 @@ exports.accountLookup = (req, res) => {
         const accountData = {
           email,
           message: `Please click on link to reset password`,
-          link: `<a href="${SERVER}/reset-password/${payload.id}/${token}">Reset password</a>`,
+          link: `<a href="https://graytcommerce-registration.herokuapp.com/reset-password/${payload.id}/${token}">Reset password</a>`,
         };
         const sendAccountEmail = await sendEmail(accountData);
         res.json(sendAccountEmail);
