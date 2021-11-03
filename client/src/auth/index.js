@@ -1,7 +1,7 @@
 import { API } from '../config';
 
-export const signup = (user) => {
-  return fetch(`${API}/signup`, {
+export const signup = (user) =>
+  fetch(`api/signup`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -9,15 +9,13 @@ export const signup = (user) => {
     },
     body: JSON.stringify(user),
   })
-    .then((res) => {
-      return res.json();
-    })
+    .then((res) => res.json())
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
-};
-export const signin = (user) => {
-  return fetch(`${API}/signin`, {
+
+export const signin = (user) =>
+  fetch(`api/signin`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -25,68 +23,59 @@ export const signin = (user) => {
     },
     body: JSON.stringify(user),
   })
-    .then((res) => {
-      return res.json();
-    })
+    .then((res) => res.json())
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
-};
-export const accountLookup = (email) => {
-  return fetch(`${API}/account-lookup`, {
+
+export const accountLookup = (email) =>
+  fetch(`api/account-lookup`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(email),
+    body: JSON.stringify({ email }),
   })
-    .then((res) => {
-      return res.json();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-export const verifyLink = (id, token) => {
-  return fetch(`${API}/reset-password/${id}/${token}`, {
+    .then((res) => res.json())
+    .catch((error) => error);
+
+export const verifyLink = (id, token) =>
+  fetch(`api/reset-password/${id}/auth/${token}`, {
     method: 'GET',
   })
     .then((res) => {
-      return res.json();
+      console.log(res);
+      res.json();
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
-};
 
-export const resetPassword = (id, password) => {
-  return fetch(`${API}/reset-password/${id}`, {
+export const resetPassword = (id, password, passwordVerify) =>
+  fetch(`http://localhost:8000/api/reset-password/${id}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${document.cookie.slice(2)}`,
     },
-    body: JSON.stringify({ password }),
+    body: JSON.stringify({ password, passwordVerify }),
   })
-    .then((res) => {
-      return res.json();
-    })
+    .then((res) => res.json())
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
-};
 
 export const authenticate = (data, next) => {
-  if (typeof window !== undefined) {
+  if (typeof window !== 'undefined') {
     localStorage.setItem('jwt', JSON.stringify(data));
     next();
   }
 };
 
 export const signout = (next) => {
-  if (typeof window !== undefined) {
+  if (typeof window !== 'undefined') {
     localStorage.removeItem('jwt');
     next();
     return fetch(`${API}/signout`, {
@@ -95,17 +84,17 @@ export const signout = (next) => {
       .then((response) => {
         console.log('signout', response);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }
+  return null;
 };
 
 export const isAuthenticated = () => {
-  if (typeof window === undefined) {
+  if (typeof window !== 'undefined') {
+    if (localStorage.getItem('jwt')) {
+      return JSON.parse(localStorage.getItem('jwt'));
+    }
     return false;
   }
-  if (localStorage.getItem('jwt')) {
-    return JSON.parse(localStorage.getItem('jwt'));
-  } else {
-    return false;
-  }
+  return false;
 };

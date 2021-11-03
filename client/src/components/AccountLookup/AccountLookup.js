@@ -6,10 +6,9 @@ import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { accountLookup} from '../../auth';
-import { LinearProgress} from '@material-ui/core';
+import { LinearProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { authenticate } from '../../auth';
+import { accountLookup, authenticate } from '../../auth';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,7 +39,8 @@ const AccountLookup = () => {
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     setLoading(true);
     accountLookup(form.email)
       .then((data) => {
@@ -59,20 +59,19 @@ const AccountLookup = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        <Typography variant="h5" component="h2">
+          Please enter your email below.
+        </Typography>
         <form
           className={classes.form}
-          onSubmit={() => handleSubmit()}
+          onSubmit={(e) => handleSubmit(e)}
           noValidate
         >
           <TextField
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            error={error && error.includes('email')}
-            helperText={
-              error &&
-              error.includes('email') &&
-              (error || `Valid email is required`)
-            }
+            error={error?.filter((err) => err.includes('email')) && true}
+            helperText={error?.filter((err) => err.includes('email'))}
             margin="normal"
             required
             variant="outlined"
@@ -96,12 +95,12 @@ const AccountLookup = () => {
                 <LinearProgress />
               </div>
             ) : (
-              'Reset Password'
+              'Send Email'
             )}
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link component={RouterLink} to="/signin" variant="body2">
+              <Link component={RouterLink} to="/auth" variant="body2">
                 Remember your password?
               </Link>
             </Grid>
@@ -112,7 +111,7 @@ const AccountLookup = () => {
     </Container>
   );
 
-  return accountLookupForm()
+  return accountLookupForm();
 };
 
 export default AccountLookup;

@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  // useEffect
+} from 'react';
 import { Link as RouterLink, Redirect, useParams } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -6,9 +9,13 @@ import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { resetPassword, verifyLink, signout } from '../../auth';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import {
+  resetPassword,
+  // verifyLink,
+  signout,
+} from '../../auth';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -32,7 +39,10 @@ const useStyles = makeStyles((theme) => ({
 
 const ResetPassword = () => {
   const classes = useStyles();
-  const { id, token } = useParams();
+  const {
+    id,
+    // token
+  } = useParams();
   const [form, setForm] = useState({
     password: '',
     passwordVerify: '',
@@ -41,52 +51,46 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
-  useEffect(() => {
-    verifyLink(id, token);
-  }, []);
+  // useEffect(() => {
+  //   verifyLink(id, token);
+  // }, []);
 
-  const passwordEqual = (password1, password2) => {
-    if (password1 !== password2) {
-      return 'Passwords do not match.';
-    }
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    if (passwordEqual(form.password, form.passwordVerify)) {
-      return setError(passwordEqual(form.password, form.passwordVerify));
-    }
-    resetPassword(id, form.password)
+    resetPassword(id, form.password, form.passwordVerify)
       .then((data) => {
         if (data.error) {
+          console.log(data.error);
           setError(data.error);
+          setLoading(false);
         } else {
           signout(() => {
             setRedirect(true);
+            setLoading(false);
           });
         }
-        setLoading(false);
       })
       .catch((err) => console.log(err));
+    return null;
   };
   const resetPasswordForm = () => (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        <Typography variant="h5" component="h2">
+          Please enter your new password below.
+        </Typography>
         <form
           className={classes.form}
-          onSubmit={() => handleSubmit()}
+          onSubmit={(e) => handleSubmit(e)}
           noValidate
         >
           <TextField
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            error={error && error.includes('password')}
-            helperText={
-              error &&
-              error.includes('password') &&
-              (error || `Password is required`)
-            }
+            error={error?.filter((err) => err.includes('assword')) && true}
+            helperText={error?.filter((err) => err.includes('assword'))[0]}
             margin="normal"
             variant="outlined"
             required
@@ -102,8 +106,8 @@ const ResetPassword = () => {
             onChange={(e) =>
               setForm({ ...form, passwordVerify: e.target.value })
             }
-            error={error && error.includes('match')}
-            helperText={error}
+            error={error?.filter((err) => err.includes('match')) && true}
+            helperText={error?.filter((err) => err.includes('match'))}
             margin="normal"
             variant="outlined"
             required
@@ -148,7 +152,7 @@ const ResetPassword = () => {
     </Container>
   );
 
-  return resetPasswordForm()
+  return resetPasswordForm();
 };
 
 export default ResetPassword;

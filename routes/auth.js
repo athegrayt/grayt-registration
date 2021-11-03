@@ -8,24 +8,22 @@ const {
   signout,
   requireSignin,
   accountLookup,
-  sendEmail,
   verifyLink,
   linkSignin,
-  isAuth,
 } = require('../controllers/auth');
 const { update, userById } = require('../controllers/user');
-const { userSignupValidator } = require('../helpers/validator');
+const { userFormValidator } = require('../helpers/validator');
 
-router.post('/signup', userSignupValidator, signup);
-router.post('/signin', signin);
+router.post('/signup', userFormValidator, signup);
+router.post('/signin', userFormValidator, signin);
 router.get('/signout', signout);
-router.post('/account-lookup', accountLookup, sendEmail);
-router.get('/reset-password/:id/:token', verifyLink);
+router.post('/account-lookup', userFormValidator, accountLookup);
+router.get('/reset-password/:id/auth/:token', verifyLink);
 router.put(
   '/reset-password/:userId',
   linkSignin,
   requireSignin,
-  isAuth,
+  userFormValidator,
   update
 );
 router.param('userId', userById);

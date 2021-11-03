@@ -7,10 +7,9 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { signin } from '../../auth';
 import { Avatar, LinearProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { authenticate } from '../../auth';
+import { signin, authenticate } from '../../auth';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -32,23 +31,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Signin = () => {
+const Signin = ({ setNewUser }) => {
   const classes = useStyles();
   const [form, setForm] = useState({
-    email: "",
-    password: ""
-  })
+    email: '',
+    password: '',
+  });
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     setLoading(true);
-    console.log(form)
     signin(form)
       .then((data) => {
-        console.log(data)
         if (data.error) {
           setError(data.error);
         } else {
@@ -78,12 +75,8 @@ const Signin = () => {
           <TextField
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            error={error && error.includes('email')}
-            helperText={
-              error &&
-              error.includes('email') &&
-              (error || `Valid email is required`)
-            }
+            error={error?.filter((err) => err.includes('email')) && true}
+            helperText={error?.filter((err) => err.includes('email'))}
             margin="normal"
             required
             variant="outlined"
@@ -92,18 +85,14 @@ const Signin = () => {
             label="Email Address"
             name="email"
             autoComplete="email"
-            //value="jerrySpringer@gmail.com"
             autoFocus
+            inputProps={{ 'data-testid': 'account-email' }}
           />
           <TextField
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            error={error && error.includes('password')}
-            helperText={
-              error &&
-              error.includes('password') &&
-              (error || `Password is required`)
-            }
+            error={error?.filter((err) => err.includes('password')) && true}
+            helperText={error?.filter((err) => err.includes('password'))}
             margin="normal"
             variant="outlined"
             required
@@ -113,7 +102,7 @@ const Signin = () => {
             type="password"
             id="password"
             autoComplete="current-password"
-            // value="zxcvbnm123"
+            inputProps={{ 'data-testid': 'account-password' }}
           />
           <Button
             className={classes.submit}
@@ -138,7 +127,12 @@ const Signin = () => {
               </Link>
             </Grid>
             <Grid item>
-              <Link component={RouterLink} to="/signup" variant="body2">
+              <Link
+                component={RouterLink}
+                onClick={() => setNewUser()}
+                variant="body2"
+                to="#"
+              >
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

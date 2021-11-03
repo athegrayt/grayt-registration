@@ -1,15 +1,24 @@
 require('dotenv').config();
+const uuidv1 = require('uuid');
 const jwt = require('jsonwebtoken');
-const sgMail = require('@sendgrid/mail');
 const expressJwt = require('express-jwt');
+const { sendEmail } = require('../services/sendEmail');
 const User = require('../models/user');
 const { errorHandler } = require('../helpers/dbErrorsHandler');
+const { encryptPassword } = require('../helpers/dbPasswordEncryption');
 
 const { SERVER } = '../../ecommerce-frontend/src/config.js';
 
-exports.signup = (req, res) => {
-  const user = User(req.body);
-  user.save((error, userData) => {
+exports.signup = async (req, res) => {
+  const userData = req.body;
+  userData.salt = uuidv1.v1();
+  userData.hashed_password = await encryptPassword(
+    userData.password,
+    userData.salt
+  );
+
+  const user = User(userData);
+  return user.save((error, userData) => {
     const newUser = userData;
     if (error) {
       return res.status(400).json({
@@ -25,13 +34,14 @@ exports.signup = (req, res) => {
 };
 exports.signin = (req, res) => {
   const { email, password } = req.body;
-  User.findOne({ email }, (error, user) => {
+  User.findOne({ email }, async (error, user) => {
     if (error || !user) {
       return res.status(400).json({
-        error: `We don't seem to have that email in our database. Please signup!`,
+        error: `We don't seem to have that email in our database.`,
       });
     }
-    if (!user.authenticate(password)) {
+    const enteredPassword = await encryptPassword(password, user.salt);
+    if (enteredPassword !== user.hashed_password) {
       return res.status(401).json({
         error: `Email and password don't match`,
       });
@@ -55,7 +65,6 @@ exports.requireSignin = expressJwt({
 });
 
 exports.isAuth = (req, res, next) => {
-  console.log(`isAuth-body: ${req.body.password}`);
   const user = req.profile && req.auth && req.profile._id === req.auth._id;
   if (!user) {
     return res.status(403).json({
@@ -73,40 +82,19 @@ exports.isAdmin = (req, res, next) => {
   }
   return next();
 };
-exports.sendEmail = (req, res) => {
-  const { email, message, link } = req.accountData;
 
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  const msg = {
-    to: email,
-    from: 'graytcommerce@gmail.com',
-    subject: 'Graytcommerce Password Reset',
-    text: message,
-    html: `<strong>${link}</strong>`,
-  };
-  sgMail
-    .send(msg)
-    .then(() => {
-      console.log('Email sent');
-      res.send('success');
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(400).send('fail');
-    });
-};
-
-exports.accountLookup = (req, res, next) => {
+exports.accountLookup = (req, res) => {
   const { email } = req.body;
   if (email !== undefined) {
-    User.findOne({ email }, (error, user) => {
+    User.findOne({ email }, async (error, user) => {
       if (error || !user) {
-        req.accountData = {
+        const noAccountData = {
           email,
           message: `We don't seem to have that email in our database. Please signup!`,
           link: `<a href="${SERVER}/signup">Create a new account.</a>`,
         };
-        next();
+        const sendNoAccountEmail = await sendEmail(noAccountData);
+        res.json(sendNoAccountEmail);
       } else {
         const payload = {
           id: user._id,
@@ -114,22 +102,23 @@ exports.accountLookup = (req, res, next) => {
         };
         const secret = `${user.password}-${user.createdAt.getTime()}`;
         const token = jwt.sign(payload, secret);
-        req.accountData = {
+        const accountData = {
           email,
           message: `Please click on link to reset password`,
           link: `<a href="${SERVER}/reset-password/${payload.id}/${token}">Reset password</a>`,
         };
-        next();
+        const sendAccountEmail = await sendEmail(accountData);
+        res.json(sendAccountEmail);
       }
     });
   }
 };
 
 exports.verifyLink = (req, res) => {
+  console.log(req);
   const { id, token } = req.params;
   User.findById(id, (err, user) => {
     if (err) {
-      console.error(err);
       return res
         .status(400)
         .json({ error: "You don't seem to be authorized to access this link" });

@@ -3,10 +3,9 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect,
+  // Redirect,
 } from 'react-router-dom';
-import Signup from './components/Signup/Signup';
-import Signin from './components/Signin/Signin';
+import Auth from './components/Auth/Auth';
 import AccountLookup from './components/AccountLookup/AccountLookup';
 import ResetPassword from './components/ResetPassword/ResetPassword';
 import Home from './components/Home/Home';
@@ -27,18 +26,19 @@ const App = () => {
       <Switch>
         <Menu>
           {auth ? (
-            <Route path="/" exact component={Home} />
+            <Fragment>
+              <Route path="/" exact component={Home} />
+            </Fragment>
           ) : (
-            <>
-              <Route path="/signin" component={Signin} />
-              <Route path="/signup" component={Signup} />
+            <Fragment>
+              <Route path="/auth" component={Auth} />
               <Route path="/account-lookup" component={AccountLookup} />
               <Route
-                path="/reset-password/:id/:token"
+                path="/reset-password/:id/auth/:token"
                 component={ResetPassword}
               />
-              <Redirect to="/signin" />
-            </>
+              {/* <Redirect to="/auth" /> */}
+            </Fragment>
           )}
         </Menu>
       </Switch>

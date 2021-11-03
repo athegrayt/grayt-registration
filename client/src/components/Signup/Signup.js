@@ -8,8 +8,8 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { signup } from '../../auth';
 import { Avatar, LinearProgress, Typography } from '@material-ui/core';
+import { signup } from '../../auth';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Signup = () => {
+const Signup = ({ setNewUser }) => {
   const classes = useStyles();
   const [form, setForm] = useState({
     firstName: '',
@@ -48,21 +48,20 @@ const Signup = () => {
   const [redirect, setRedirect] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     setLoading(true);
     signup(form)
       .then((data) => {
         if (data.error) {
           setError(data.error);
         } else {
-          console.log(data);
           setForm({ firstName: '', lastName: '', email: '', password: '' });
           setError(null);
           setRedirect(true);
         }
         setLoading(false);
       })
-      .catch();
+      .catch((err) => console.log(err));
   };
 
   const signUpForm = () => (
@@ -87,12 +86,8 @@ const Signup = () => {
                 onChange={(e) =>
                   setForm({ ...form, firstName: e.target.value })
                 }
-                error={error && error.includes('First')}
-                helperText={
-                  error &&
-                  error.includes('First') &&
-                  (error || `First name is required`)
-                }
+                error={error?.filter((err) => err.includes('first')) && true}
+                helperText={error?.filter((err) => err.includes('first'))}
                 autoComplete="fname"
                 name="firstName"
                 variant="outlined"
@@ -107,12 +102,8 @@ const Signup = () => {
               <TextField
                 value={form.lastName}
                 onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                error={error && error.includes('Last')}
-                helperText={
-                  error &&
-                  error.includes('Last') &&
-                  (error || `Last name is required`)
-                }
+                error={error?.filter((err) => err.includes('last')) && true}
+                helperText={error?.filter((err) => err.includes('last'))}
                 variant="outlined"
                 required
                 fullWidth
@@ -126,12 +117,8 @@ const Signup = () => {
               <TextField
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                error={error && error.includes('email')}
-                helperText={
-                  error &&
-                  error.includes('email') &&
-                  (error || `Valid email is required`)
-                }
+                error={error?.filter((err) => err.includes('email')) && true}
+                helperText={error?.filter((err) => err.includes('email'))}
                 variant="outlined"
                 required
                 fullWidth
@@ -145,12 +132,8 @@ const Signup = () => {
               <TextField
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                error={error && error.includes('password')}
-                helperText={
-                  error &&
-                  error.includes('Password') &&
-                  (error || `Password is required`)
-                }
+                error={error?.filter((err) => err.includes('password')) && true}
+                helperText={error?.filter((err) => err.includes('password'))}
                 variant="outlined"
                 required
                 fullWidth
@@ -180,7 +163,12 @@ const Signup = () => {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link component={RouterLink} to="/signin" variant="body2">
+              <Link
+                component={RouterLink}
+                onClick={() => setNewUser()}
+                to="#"
+                variant="body2"
+              >
                 Already have an account? Sign in
               </Link>
             </Grid>
@@ -190,8 +178,7 @@ const Signup = () => {
       {redirect && <Redirect to="/" />}
     </Container>
   );
-
-  return signUpForm()
+  return signUpForm();
 };
 
 export default Signup;

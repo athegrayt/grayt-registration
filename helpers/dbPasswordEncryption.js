@@ -1,10 +1,13 @@
-const crypto = require('crypto');
+const { createHmac } = require('crypto');
 
-exports.encryptPassword = function (password, salt) {
+exports.encryptPassword = async (password, salt) => {
   if (!password) return ``;
   try {
-    return crypto.createHmac('sha1', salt).update(password).digest('hex');
-  } catch (err) {
-    return ``;
+    const hashPassword = createHmac('sha1', salt)
+      .update(password)
+      .digest('hex');
+    return hashPassword;
+  } catch (error) {
+    return { error };
   }
 };

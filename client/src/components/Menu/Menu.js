@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   AppBar,
@@ -8,30 +8,26 @@ import {
   ListItemText,
   Toolbar,
 } from '@material-ui/core';
-import { signout } from '../../auth';
-import { isAuthenticated } from '../../auth';
+import { signout, isAuthenticated } from '../../auth';
 
-const useStyles = makeStyles((theme) => {
-  return {
-    menuBar: {
-      display: 'flex',
-    },
-    isActive: {
-      color: 'red',
-    },
-    page: {
-      width: '100%',
-      background: '#fefefe',
-      padding: theme.spacing(3),
-      paddingBottom: 0,
-      paddingTop: 0,
-    },
-    toolbar: theme.mixins.toolbar,
-  };
-});
+const useStyles = makeStyles((theme) => ({
+  menuBar: {
+    display: 'flex',
+  },
+  isActive: {
+    color: 'red',
+  },
+  page: {
+    width: '100%',
+    background: '#fefefe',
+    padding: theme.spacing(3),
+    paddingBottom: 0,
+    paddingTop: 0,
+  },
+  toolbar: theme.mixins.toolbar,
+}));
 const Menu = (props) => {
   const history = useHistory();
-  let location = useLocation();
   const classes = useStyles();
 
   return (
@@ -40,25 +36,21 @@ const Menu = (props) => {
         <Toolbar>
           <List className={classes.menuBar}>
             {!isAuthenticated() && (
-                <ListItem
-                  key="Register"
-                  data-testid="menu-Register"
-                  button
-                  onClick={() => history.push('/signin')}
-                  className={
-                    location.pathname === ('/signin' || '/signup') &&
-                    classes.isActive
-                  }
-                >
-                  <ListItemText primary="Register" />
-                </ListItem>
+              <ListItem
+                key="Register"
+                data-testid="menu-Register"
+                button
+                onClick={() => history.push('/auth')}
+              >
+                <ListItemText primary="Register" />
+              </ListItem>
             )}
             {isAuthenticated() && (
               <ListItem
                 key="Logout"
                 data-testid="menu-Logout"
                 button
-                onClick={() => signout(() => history.push('/'))}
+                onClick={() => signout(() => history.push('/auth'))}
               >
                 <ListItemText primary="Logout" />
               </ListItem>

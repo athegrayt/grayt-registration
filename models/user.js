@@ -45,21 +45,21 @@ const userSchema = new mongoose.Schema(
 
 // virtual field
 
-userSchema
-  .virtual('password')
-  .set(function (password) {
-    this._password = password;
-    this.salt = uuidv1.v1();
-    this.hashed_password = encryptPassword(password, this.salt);
-  })
-  .get(function () {
-    return this._password;
-  });
+// userSchema
+//   .virtual('password')
+//   .set(async function (password) {
+//     this._password = password;
+//     this.salt = uuidv1.v1();
+//     this.hashed_password = await encryptPassword(password, this.salt);
+//   })
+//   .get(function () {
+//     return this._password;
+//   });
 
-userSchema.methods = {
-  authenticate: function (plainText) {
-    return encryptPassword(plainText, this.salt) === this.hashed_password;
-  },
-};
+// userSchema.methods = {
+//   authenticate: function (plainText) {
+//     return encryptPassword(plainText, this.salt) === this.hashed_password;
+//   },
+// };
 
 module.exports = mongoose.model('User', userSchema);
