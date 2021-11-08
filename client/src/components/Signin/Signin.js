@@ -47,7 +47,11 @@ const Signin = ({ setNewUser }) => {
     signin(form)
       .then((data) => {
         if (data.error) {
-          setError(data.error);
+          if (Array.isArray(data.error)) {
+            setError(data.error);
+          } else {
+            setError([data.error]);
+          }
         } else {
           authenticate(data, () => {
             setRedirect(true);
@@ -75,7 +79,9 @@ const Signin = ({ setNewUser }) => {
           <TextField
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            error={error?.filter((err) => err.includes('email')) && true}
+            error={
+              error?.filter((err) => err.includes('email')).length > 0 && true
+            }
             helperText={error?.filter((err) => err.includes('email'))}
             margin="normal"
             required
@@ -91,8 +97,13 @@ const Signin = ({ setNewUser }) => {
           <TextField
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            error={error?.filter((err) => err.includes('password')) && true}
-            helperText={error?.filter((err) => err.includes('password'))}
+            error={
+              error?.filter((err) => err.toLowerCase().includes('password'))
+                .length > 0 && true
+            }
+            helperText={
+              error?.filter((err) => err.toLowerCase().includes('password'))[0]
+            }
             margin="normal"
             variant="outlined"
             required

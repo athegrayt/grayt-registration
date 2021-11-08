@@ -1,10 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Auth from './components/Auth/Auth';
 import AccountLookup from './components/AccountLookup/AccountLookup';
 import ResetPassword from './components/ResetPassword/ResetPassword';
@@ -37,7 +32,6 @@ const App = () => {
                 path="/reset-password/:id/:token"
                 component={ResetPassword}
               />
-              <Redirect to="/auth" />
             </Fragment>
           )}
         </Menu>

@@ -12,7 +12,7 @@ export const signup = (user) =>
       console.error(err);
     });
 
-export const signin = (user) =>
+export const signin = async (user) =>
   fetch(`api/signin`, {
     method: 'POST',
     headers: {
@@ -22,9 +22,7 @@ export const signin = (user) =>
     body: JSON.stringify(user),
   })
     .then((res) => res.json())
-    .catch((err) => {
-      console.error(err);
-    });
+    .catch((err) => console.log(err));
 
 export const accountLookup = (email) =>
   fetch(`api/account-lookup`, {

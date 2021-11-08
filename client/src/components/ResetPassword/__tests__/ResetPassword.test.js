@@ -10,7 +10,7 @@ const MockResetPassword = () => (
 );
 
 describe('ResetPassword', () => {
-  test('password and passwordVerify inputs indicate errors with invalid input', async () => {
+  test.skip('password and passwordVerify inputs indicate errors with invalid input', async () => {
     render(<MockResetPassword />);
 
     const submitElement = screen.getByRole('button', { type: 'submit' });

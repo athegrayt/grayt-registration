@@ -86,8 +86,13 @@ const Signup = ({ setNewUser }) => {
                 onChange={(e) =>
                   setForm({ ...form, firstName: e.target.value })
                 }
-                error={error?.filter((err) => err.includes('first')) && true}
-                helperText={error?.filter((err) => err.includes('first'))}
+                error={
+                  error?.filter((err) => err.toLowerCase().includes('first'))
+                    .length > 0 && true
+                }
+                helperText={error?.filter((err) =>
+                  err.toLowerCase().includes('first')
+                )}
                 autoComplete="fname"
                 name="firstName"
                 variant="outlined"
@@ -102,8 +107,13 @@ const Signup = ({ setNewUser }) => {
               <TextField
                 value={form.lastName}
                 onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                error={error?.filter((err) => err.includes('last')) && true}
-                helperText={error?.filter((err) => err.includes('last'))}
+                error={
+                  error?.filter((err) => err.toLowerCase().includes('last'))
+                    .length > 0 && true
+                }
+                helperText={error?.filter((err) =>
+                  err.toLowerCase().includes('last')
+                )}
                 variant="outlined"
                 required
                 fullWidth
@@ -117,8 +127,13 @@ const Signup = ({ setNewUser }) => {
               <TextField
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                error={error?.filter((err) => err.includes('email')) && true}
-                helperText={error?.filter((err) => err.includes('email'))}
+                error={
+                  error?.filter((err) => err.toLowerCase().includes('email'))
+                    .length > 0 && true
+                }
+                helperText={error?.filter((err) =>
+                  err.toLowerCase().includes('email')
+                )}
                 variant="outlined"
                 required
                 fullWidth
@@ -132,8 +147,15 @@ const Signup = ({ setNewUser }) => {
               <TextField
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                error={error?.filter((err) => err.includes('password')) && true}
-                helperText={error?.filter((err) => err.includes('password'))}
+                error={
+                  error?.filter((err) => err.toLowerCase().includes('password'))
+                    .length > 0 && true
+                }
+                helperText={
+                  error?.filter((err) =>
+                    err.toLowerCase().includes('password')
+                  )[0]
+                }
                 variant="outlined"
                 required
                 fullWidth

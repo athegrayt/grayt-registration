@@ -113,7 +113,6 @@ exports.accountLookup = (req, res) => {
 };
 
 exports.verifyLink = (req, res) => {
-  console.log(req);
   const { id, token } = req.params;
   User.findById(id, (err, user) => {
     if (err) {
