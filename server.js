@@ -7,7 +7,6 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const expressValidator = require('express-validator');
 const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/user');
 
 const port = process.env.PORT || 8000;
 const app = express();
@@ -35,7 +34,6 @@ app.use(cors());
 
 // route middleware
 app.use('/api', authRoutes);
-app.use('/api', userRoutes);
 
 app.use(express.static('./client/build'));
 app.get('/*', (req, res) => {
