@@ -9,6 +9,7 @@ import Container from '@material-ui/core/Container';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Avatar, LinearProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import Modal from '../Modal/Modal';
 import { signin, authenticate } from '../../auth';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,6 +41,7 @@ const Signin = ({ setNewUser }) => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
+  const [modal, setModal] = useState();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -50,7 +52,7 @@ const Signin = ({ setNewUser }) => {
           if (Array.isArray(data.error)) {
             setError(data.error);
           } else {
-            setError([data.error]);
+            setError([`${data.error}`]);
           }
         } else {
           authenticate(data, () => {
@@ -59,7 +61,13 @@ const Signin = ({ setNewUser }) => {
         }
         setLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch(() => {
+        setModal({
+          title: 'Oops... ',
+          message: 'There was a problem signing you in. Please try again',
+        });
+        setLoading(false);
+      });
   };
   const signinForm = () => (
     <Container component="main" maxWidth="xs">
@@ -80,9 +88,17 @@ const Signin = ({ setNewUser }) => {
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             error={
-              error?.filter((err) => err.includes('email')).length > 0 && true
+              error?.filter(
+                (err) =>
+                  err.toLowerCase().includes('email') &&
+                  !err.toLowerCase().includes('password')
+              ).length > 0 && true
             }
-            helperText={error?.filter((err) => err.includes('email'))}
+            helperText={error?.filter(
+              (err) =>
+                err.toLowerCase().includes('email') &&
+                !err.toLowerCase().includes('password')
+            )}
             margin="normal"
             required
             variant="outlined"
@@ -92,7 +108,7 @@ const Signin = ({ setNewUser }) => {
             name="email"
             autoComplete="email"
             autoFocus
-            inputProps={{ 'data-testid': 'account-email' }}
+            inputProps={{ 'data-testid': 'email-signin' }}
           />
           <TextField
             value={form.password}
@@ -113,7 +129,7 @@ const Signin = ({ setNewUser }) => {
             type="password"
             id="password"
             autoComplete="current-password"
-            inputProps={{ 'data-testid': 'account-password' }}
+            inputProps={{ 'data-testid': 'password-signin' }}
           />
           <Button
             className={classes.submit}
@@ -150,6 +166,14 @@ const Signin = ({ setNewUser }) => {
           </Grid>
         </form>
       </div>
+      {modal && (
+        <Modal
+          title={modal.title}
+          message={modal.message}
+          modal={modal && true}
+          setModal={() => setModal(!modal)}
+        />
+      )}
       {redirect && <Redirect to="/" />}
     </Container>
   );

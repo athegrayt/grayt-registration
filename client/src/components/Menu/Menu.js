@@ -38,7 +38,7 @@ const Menu = (props) => {
             {!isAuthenticated() && (
               <ListItem
                 key="Register"
-                data-testid="menu-Register"
+                data-testid="menu-register"
                 button
                 onClick={() => history.push('/auth')}
               >

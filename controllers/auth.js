@@ -6,6 +6,7 @@ const { sendEmail } = require('../services/sendEmail');
 const User = require('../models/user');
 const { errorHandler } = require('../helpers/dbErrorsHandler');
 const { encryptPassword } = require('../helpers/dbPasswordEncryption');
+const { noAccountData, accountData } = require('../helpers/emailTemplates');
 
 exports.signup = async (req, res) => {
   const userData = req.body;
@@ -41,7 +42,7 @@ exports.signin = (req, res) => {
     const enteredPassword = await encryptPassword(password, user.salt);
     if (enteredPassword !== user.hashed_password) {
       return res.status(401).json({
-        error: `Email and password don't match`,
+        error: `You have entered an invalid email or password`,
       });
     }
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
@@ -86,12 +87,8 @@ exports.accountLookup = (req, res) => {
   if (email !== undefined) {
     User.findOne({ email }, async (error, user) => {
       if (error || !user) {
-        const noAccountData = {
-          email,
-          message: `We don't seem to have that email in our database. Please signup!`,
-          link: `<a href="https://graytcommerce-registration.herokuapp.com/auth">Create a new account.</a>`,
-        };
-        const sendNoAccountEmail = await sendEmail(noAccountData);
+        const noAccount = noAccountData(email);
+        const sendNoAccountEmail = await sendEmail(noAccount);
         res.json(sendNoAccountEmail);
       } else {
         const payload = {
@@ -100,31 +97,27 @@ exports.accountLookup = (req, res) => {
         };
         const secret = `${user.password}-${user.createdAt.getTime()}`;
         const token = jwt.sign(payload, secret);
-        const accountData = {
-          email,
-          message: `Please click on link to reset password`,
-          link: `<a href="https://graytcommerce-registration.herokuapp.com/reset-password/${payload.id}/${token}">Reset password</a>`,
-        };
-        const sendAccountEmail = await sendEmail(accountData);
+        const account = accountData(email, payload.id, token);
+        const sendAccountEmail = await sendEmail(account);
         res.json(sendAccountEmail);
       }
     });
   }
 };
 
-exports.verifyLink = (req, res) => {
-  const { id, token } = req.params;
-  User.findById(id, (err, user) => {
-    if (err) {
-      return res
-        .status(400)
-        .json({ error: "You don't seem to be authorized to access this link" });
+exports.verifyLink = (req, res, next) => {
+  const { token } = req.params;
+  const { hashed_password, createdAt } = req.profile;
+  const secret = `${hashed_password}-${createdAt.getTime()}`;
+  jwt.decode(token, secret, (err, decoded) => {
+    if (err || !decoded) {
+      res.status(401).json({
+        error: 'You are not authorized to perform this action.',
+      });
     }
-    const { password, createdAt } = user;
-    const secret = `${password}-${createdAt.getTime()}`;
-    const payload = jwt.decode(token, secret);
-    return res.json({ payload });
+    req.payload = decoded;
   });
+  next();
 };
 
 exports.linkSignin = (req, res, next) => {

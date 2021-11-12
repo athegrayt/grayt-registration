@@ -1,7 +1,4 @@
-import React, {
-  useState,
-  // useEffect
-} from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink, Redirect, useParams } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,11 +8,8 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { LinearProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  resetPassword,
-  // verifyLink,
-  signout,
-} from '../../auth';
+import Modal from '../Modal/Modal';
+import { resetPassword } from '../../auth';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,10 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ResetPassword = () => {
   const classes = useStyles();
-  const {
-    id,
-    // token
-  } = useParams();
+  const { id, token } = useParams();
   const [form, setForm] = useState({
     password: '',
     passwordVerify: '',
@@ -50,28 +41,35 @@ const ResetPassword = () => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
-
-  // useEffect(() => {
-  //   verifyLink(id, token);
-  // }, []);
+  const [modal, setModal] = useState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    resetPassword(id, form.password, form.passwordVerify)
+    resetPassword(id, token, form.password, form.passwordVerify)
       .then((data) => {
         if (data.error) {
-          console.log(data.error);
           setError(data.error);
           setLoading(false);
         } else {
-          signout(() => {
-            setRedirect(true);
-            setLoading(false);
+          setModal({
+            title: 'Password was updated successfully',
+            message: 'Please sign in with you new password.',
           });
+          setTimeout(() => {
+            setRedirect(true);
+          }, 5000);
+          setLoading(false);
         }
       })
-      .catch((err) => console.log(err));
+      .catch(() => {
+        setModal({
+          title: 'Oops... ',
+          message:
+            'There was a problem resetting your password. Please try again',
+        });
+        setLoading(false);
+      });
     return null;
   };
   const resetPasswordForm = () => (
@@ -89,8 +87,13 @@ const ResetPassword = () => {
           <TextField
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            error={error?.filter((err) => err.includes('assword')) && true}
-            helperText={error?.filter((err) => err.includes('assword'))[0]}
+            error={
+              error?.filter((err) => err.toLowerCase().includes('password')) &&
+              true
+            }
+            helperText={
+              error?.filter((err) => err.toLowerCase().includes('password'))[0]
+            }
             margin="normal"
             variant="outlined"
             required
@@ -100,6 +103,7 @@ const ResetPassword = () => {
             type="password"
             id="password"
             autoComplete="current-password"
+            inputProps={{ 'data-testid': 'password-resetPassword' }}
           />
           <TextField
             value={form.passwordVerify}
@@ -117,6 +121,7 @@ const ResetPassword = () => {
             type="password"
             id="passwordVerify"
             autoComplete="current-passwordVerify"
+            inputProps={{ 'data-testid': 'passwordVerify-resetPassword' }}
           />
           <Button
             className={classes.submit}
@@ -131,7 +136,7 @@ const ResetPassword = () => {
                 <LinearProgress />
               </div>
             ) : (
-              'Sign In'
+              'Reset Password'
             )}
           </Button>
           <Grid container>
@@ -148,6 +153,14 @@ const ResetPassword = () => {
           </Grid>
         </form>
       </div>
+      {modal && (
+        <Modal
+          title={modal.title}
+          message={modal.message}
+          modal={modal && true}
+          setModal={() => setModal(!modal)}
+        />
+      )}
       {redirect && <Redirect to="/" />}
     </Container>
   );

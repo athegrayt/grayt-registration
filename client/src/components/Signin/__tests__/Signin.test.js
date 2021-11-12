@@ -31,8 +31,8 @@ describe('Signin', () => {
   test('email input indicates non-registered account errors with non-registered account input', async () => {
     render(<MockSignin />);
 
-    const emailInputElement = screen.getByTestId('account-email');
-    const passwordInputElement = screen.getByTestId('account-password');
+    const emailInputElement = screen.getByTestId('email-signin');
+    const passwordInputElement = screen.getByTestId('password-signin');
     fireEvent.change(emailInputElement, {
       target: { value: 'nonUser@gmail.com' },
     });
@@ -51,8 +51,8 @@ describe('Signin', () => {
   test('password input indicates email and password mismatch errors with wrong password input', async () => {
     render(<MockSignin />);
 
-    const emailInputElement = screen.getByTestId('account-email');
-    const passwordInputElement = screen.getByTestId('account-password');
+    const emailInputElement = screen.getByTestId('email-signin');
+    const passwordInputElement = screen.getByTestId('password-signin');
     fireEvent.change(emailInputElement, {
       target: { value: 'currentUser@gmail.com' },
     });
@@ -63,7 +63,7 @@ describe('Signin', () => {
 
     fireEvent.click(submitElement);
     const passwordHelperTextElement = await screen.findByText(
-      /Email and password don't match/i
+      /You have entered an invalid email or password/i
     );
 
     expect(passwordHelperTextElement).toBeInTheDocument();
@@ -71,8 +71,8 @@ describe('Signin', () => {
   test('email input indicates invalid email error with invalid email input', async () => {
     render(<MockSignin />);
 
-    const emailInputElement = screen.getByTestId('account-email');
-    const passwordInputElement = screen.getByTestId('account-password');
+    const emailInputElement = screen.getByTestId('email-signin');
+    const passwordInputElement = screen.getByTestId('password-signin');
     fireEvent.change(emailInputElement, {
       target: { value: 'invalidEmail' },
     });
@@ -91,8 +91,8 @@ describe('Signin', () => {
   test('only password input indicates invalid password syntax error with valid email but invalid password input', async () => {
     render(<MockSignin />);
 
-    const emailInputElement = screen.getByTestId('account-email');
-    const passwordInputElement = screen.getByTestId('account-password');
+    const emailInputElement = screen.getByTestId('email-signin');
+    const passwordInputElement = screen.getByTestId('password-signin');
     fireEvent.change(emailInputElement, {
       target: { value: 'validEmail@gmail.com' },
     });
@@ -103,7 +103,7 @@ describe('Signin', () => {
 
     fireEvent.click(submitElement);
     const emailHelperTextElement = screen.queryByText(
-      /Please enter a vaild email/i
+      /Please enter a valid email/i
     );
     const passwordHelperTextElement = await screen.findByText(
       /Password must contain a number/i
@@ -111,5 +111,18 @@ describe('Signin', () => {
 
     expect(emailHelperTextElement).not.toBeInTheDocument();
     expect(passwordHelperTextElement).toBeInTheDocument();
+  });
+  test('modal alerts server error', async () => {
+    render(<MockSignin />);
+    const emailInputElement = screen.getByTestId('email-signin');
+    fireEvent.change(emailInputElement, {
+      target: { value: 'serverError@gmail.com' },
+    });
+    const submitButtonElement = screen.getByRole('button', {
+      type: 'submit',
+    });
+    fireEvent.click(submitButtonElement);
+    const modalTextElement = await screen.findByText(/Oops/);
+    expect(modalTextElement).toBeInTheDocument();
   });
 });

@@ -1,20 +1,28 @@
-import { render, screen } from '@testing-library/react';
-import { createMemoryHistory } from 'history';
+/* eslint-disable no-undef */
+import { render, screen, fireEvent } from '@testing-library/react';
+
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import App from './App';
-jest.mock('./auth/index.js');
 
-const MockApp = () => (
-  <Router history={history}>
-    <App />
-  </Router>
-);
-
-test.skip('signin page renders when not authenticated', () => {
-  const history = createMemoryHistory();
-  history.push('/signup');
-  render(<MockApp />);
-  const signupContent = screen.getAllByText(/Sign in/i);
-  expect(signupContent).toBeTruthy();
+describe('App.js', () => {
+  test('modal verifies that email was sent', async () => {
+    render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    );
+    const registerLinkElement = screen.getByTestId('menu-register');
+    fireEvent.click(registerLinkElement);
+    const forgotPasswordElement = await screen.findByText(/forgot password/i);
+    fireEvent.click(forgotPasswordElement);
+    const accountLookupElement = screen.getByTestId('email-account-lookup');
+    fireEvent.change(accountLookupElement, {
+      target: { value: 'validEmail@gmail.com' },
+    });
+    const submitButtonElement = screen.getByText('Send Email');
+    fireEvent.click(submitButtonElement);
+    const modalElement = await screen.findByText(/Email sent successfully/i);
+    expect(modalElement).toBeInTheDocument();
+  });
 });

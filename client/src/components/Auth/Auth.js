@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import Signin from '../Signin/Signin';
 import Signup from '../Signup/Signup';
 
-const Auth = () => {
+const Auth = ({ setModal }) => {
   const [newUser, setNewUser] = useState();
   const authInterface = newUser ? (
-    <Signup setNewUser={() => setNewUser(false)} />
+    <Signup
+      setModal={(msg) => setModal(msg)}
+      setNewUser={() => setNewUser(false)}
+    />
   ) : (
-    <Signin setNewUser={() => setNewUser(true)} />
+    <Signin
+      setModal={(msg) => setModal(msg)}
+      setNewUser={() => setNewUser(true)}
+    />
   );
 
   return authInterface;

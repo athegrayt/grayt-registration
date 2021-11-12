@@ -1,10 +1,11 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Auth from './components/Auth/Auth';
 import AccountLookup from './components/AccountLookup/AccountLookup';
 import ResetPassword from './components/ResetPassword/ResetPassword';
 import Home from './components/Home/Home';
 import Menu from './components/Menu/Menu';
+
 import { isAuthenticated } from './auth';
 
 const App = () => {
@@ -20,20 +21,10 @@ const App = () => {
     <Router>
       <Switch>
         <Menu>
-          {auth ? (
-            <Fragment>
-              <Route path="/" exact component={Home} />
-            </Fragment>
-          ) : (
-            <Fragment>
-              <Route path="/auth" component={Auth} />
-              <Route path="/account-lookup" component={AccountLookup} />
-              <Route
-                path="/reset-password/:id/:token"
-                component={ResetPassword}
-              />
-            </Fragment>
-          )}
+          <Route path="/" exact render={() => <Home auth={auth} />} />
+          <Route path="/auth" component={Auth} />
+          <Route path="/account-lookup" component={AccountLookup} />
+          <Route path="/reset-password/:id/:token" component={ResetPassword} />
         </Menu>
       </Switch>
     </Router>

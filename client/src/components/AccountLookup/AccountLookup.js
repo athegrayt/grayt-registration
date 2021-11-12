@@ -8,7 +8,8 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { LinearProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { accountLookup, authenticate } from '../../auth';
+import Modal from '../Modal/Modal';
+import { accountLookup } from '../../auth';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,6 +39,7 @@ const AccountLookup = () => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
+  const [modal, setModal] = useState();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,15 +47,27 @@ const AccountLookup = () => {
     accountLookup(form.email)
       .then((data) => {
         if (data.error) {
-          setError(data.error);
+          if (Array.isArray(data.error)) {
+            setError(data.error);
+          } else {
+            setError([data.error]);
+          }
         } else {
-          authenticate(data, () => {
-            setRedirect(true);
+          setModal({
+            title: 'Email sent successfully',
+            message: 'Please open email and follow the instructions.',
           });
+          setTimeout(() => setRedirect(true), 5000);
         }
         setLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch(() => {
+        setModal({
+          title: 'Oops... ',
+          message: 'There was a problem sending the email. Please try again',
+        });
+        setLoading(false);
+      });
   };
   const accountLookupForm = () => (
     <Container component="main" maxWidth="xs">
@@ -70,8 +84,13 @@ const AccountLookup = () => {
           <TextField
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            error={error?.filter((err) => err.includes('email')) && true}
-            helperText={error?.filter((err) => err.includes('email'))}
+            error={
+              error?.filter((err) => err.toLowerCase().includes('email')) &&
+              true
+            }
+            helperText={error?.filter((err) =>
+              err.toLowerCase().includes('email')
+            )}
             margin="normal"
             required
             variant="outlined"
@@ -81,6 +100,7 @@ const AccountLookup = () => {
             name="email"
             autoComplete="email"
             autoFocus
+            inputProps={{ 'data-testid': 'email-account-lookup' }}
           />
           <Button
             className={classes.submit}
@@ -107,7 +127,15 @@ const AccountLookup = () => {
           </Grid>
         </form>
       </div>
-      {redirect && <Redirect to="/" />}
+      {modal && (
+        <Modal
+          title={modal.title}
+          message={modal.message}
+          modal={modal && true}
+          setModal={() => setModal(!modal)}
+        />
+      )}
+      {redirect && <Redirect to="/auth" />}
     </Container>
   );
 

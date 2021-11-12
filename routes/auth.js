@@ -18,12 +18,10 @@ router.post('/signup', userFormValidator, signup);
 router.post('/signin', userFormValidator, signin);
 router.get('/signout', signout);
 router.post('/account-lookup', userFormValidator, accountLookup);
-router.get('/reset-password/:id/:token', verifyLink);
 router.put(
-  '/reset-password/:userId',
-  linkSignin,
-  requireSignin,
+  '/reset-password/:userId/:token',
   userFormValidator,
+  verifyLink,
   update
 );
 router.param('userId', userById);

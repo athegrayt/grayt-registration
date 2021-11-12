@@ -6,11 +6,7 @@ export const signup = (user) =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(user),
-  })
-    .then((res) => res.json())
-    .catch((err) => {
-      console.error(err);
-    });
+  }).then((res) => res.json());
 
 export const signin = async (user) =>
   fetch(`api/signin`, {
@@ -20,9 +16,7 @@ export const signin = async (user) =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(user),
-  })
-    .then((res) => res.json())
-    .catch((err) => console.log(err));
+  }).then((res) => res.json());
 
 export const accountLookup = (email) =>
   fetch(`api/account-lookup`, {
@@ -32,36 +26,18 @@ export const accountLookup = (email) =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ email }),
-  })
-    .then((res) => res.json())
-    .catch((error) => error);
+  }).then((res) => res.json());
 
-export const verifyLink = (id, token) =>
-  fetch(`api/reset-password/${id}/${token}`, {
-    method: 'GET',
-  })
-    .then((res) => {
-      console.log(res);
-      res.json();
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-
-export const resetPassword = (id, password, passwordVerify) =>
-  fetch(`/api/reset-password/${id}`, {
+export const resetPassword = (id, token, password, passwordVerify) =>
+  fetch(`/api/reset-password/${id}/${token}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${document.cookie.slice(2)}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ password, passwordVerify }),
-  })
-    .then((res) => res.json())
-    .catch((err) => {
-      console.error(err);
-    });
+  }).then((res) => res.json());
 
 export const authenticate = (data, next) => {
   if (typeof window !== 'undefined') {
@@ -76,11 +52,7 @@ export const signout = (next) => {
     next();
     return fetch(`api/signout`, {
       method: 'GET',
-    })
-      .then((response) => {
-        console.log('signout', response);
-      })
-      .catch((err) => console.error(err));
+    });
   }
   return null;
 };

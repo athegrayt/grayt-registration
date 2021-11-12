@@ -35,4 +35,29 @@ describe('Signup', () => {
     expect(emailHelperTextElement).toBeInTheDocument();
     expect(passwordHelperTextElement).toBeInTheDocument();
   });
+  test('modal alerts server error', async () => {
+    render(<MockSignup />);
+    const firstNameInputElement = screen.getByTestId('firstName-signup');
+    fireEvent.change(firstNameInputElement, {
+      target: { value: 'robot' },
+    });
+    const lastNameInputElement = screen.getByTestId('lastName-signup');
+    fireEvent.change(lastNameInputElement, {
+      target: { value: 'tester' },
+    });
+    const emailInputElement = screen.getByTestId('email-signup');
+    fireEvent.change(emailInputElement, {
+      target: { value: 'serverError@gmail.com' },
+    });
+    const passwordInputElement = screen.getByTestId('password-signup');
+    fireEvent.change(passwordInputElement, {
+      target: { value: 'zxcvbnm123' },
+    });
+    const submitButtonElement = screen.getByRole('button', {
+      type: 'submit',
+    });
+    fireEvent.click(submitButtonElement);
+    const modalTextElement = await screen.findByText(/Oops/);
+    expect(modalTextElement).toBeInTheDocument();
+  });
 });

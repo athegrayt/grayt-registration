@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Avatar, LinearProgress, Typography } from '@material-ui/core';
 import { signup } from '../../auth';
+import Modal from '../Modal/Modal';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,6 +47,7 @@ const Signup = ({ setNewUser }) => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
+  const [modal, setModal] = useState();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -61,7 +63,13 @@ const Signup = ({ setNewUser }) => {
         }
         setLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch(() => {
+        setModal({
+          title: 'Oops... ',
+          message: 'There was a problem signing you up. Please try again',
+        });
+        setLoading(false);
+      });
   };
 
   const signUpForm = () => (
@@ -101,6 +109,7 @@ const Signup = ({ setNewUser }) => {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                inputProps={{ 'data-testid': 'firstName-signup' }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -121,6 +130,7 @@ const Signup = ({ setNewUser }) => {
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
+                inputProps={{ 'data-testid': 'lastName-signup' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -141,6 +151,7 @@ const Signup = ({ setNewUser }) => {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                inputProps={{ 'data-testid': 'email-signup' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -164,6 +175,7 @@ const Signup = ({ setNewUser }) => {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                inputProps={{ 'data-testid': 'password-signup' }}
               />
             </Grid>
           </Grid>
@@ -197,6 +209,14 @@ const Signup = ({ setNewUser }) => {
           </Grid>
         </form>
       </div>
+      {modal && (
+        <Modal
+          title={modal.title}
+          message={modal.message}
+          modal={modal && true}
+          setModal={() => setModal(!modal)}
+        />
+      )}
       {redirect && <Redirect to="/" />}
     </Container>
   );
