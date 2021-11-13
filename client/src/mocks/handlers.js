@@ -38,6 +38,24 @@ export default [
     }
     return res(ctx.status(200));
   }),
+  // Handles a POST /signup request
+  rest.post('http://localhost/api/signup', (req, res, ctx) => {
+    const { firstName, lastName, email, password } = req.body;
+
+    if (email === 'duplicateEmail@gmail.com') {
+      return res(
+        ctx.status(400),
+        ctx.json({
+          error: 'Email already exists',
+        })
+      );
+    }
+
+    if (formValidate({ firstName, lastName, email, password })) {
+      return res(ctx.status(400), ctx.json({ error: formValidate(req.body) }));
+    }
+    return res(ctx.status(200));
+  }),
   // Handles a POST /signin request
   rest.post('http://localhost/api/signup', (req, res, ctx) => {
     const { email } = req.body;

@@ -35,6 +35,22 @@ describe('Signup', () => {
     expect(emailHelperTextElement).toBeInTheDocument();
     expect(passwordHelperTextElement).toBeInTheDocument();
   });
+  test('email input indicates error with duplicated email', async () => {
+    render(<MockSignup />);
+    const emailInputElement = screen.getByTestId('email-signup');
+    fireEvent.change(emailInputElement, {
+      target: { value: 'duplicateEmail@gmail.com' },
+    });
+    const submitElement = screen.getByRole('button', { type: 'submit' });
+
+    fireEvent.click(submitElement);
+
+    const emailHelperTextElement = await screen.findByText(
+      /Email already exists/i
+    );
+
+    expect(emailHelperTextElement).toBeInTheDocument();
+  });
   test('modal alerts server error', async () => {
     render(<MockSignup />);
     const firstNameInputElement = screen.getByTestId('firstName-signup');

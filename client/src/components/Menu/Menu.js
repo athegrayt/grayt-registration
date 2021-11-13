@@ -14,11 +14,8 @@ const useStyles = makeStyles((theme) => ({
   menuBar: {
     display: 'flex',
   },
-  isActive: {
-    color: 'red',
-  },
   page: {
-    width: '100%',
+    width: '100vw',
     background: '#fefefe',
     padding: theme.spacing(3),
     paddingBottom: 0,

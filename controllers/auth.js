@@ -20,12 +20,19 @@ exports.signup = async (req, res) => {
   return user.save((error, data) => {
     const newUser = data;
     if (error) {
+      if (errorHandler(error).includes('email already exists')) {
+        return res.status(400).json({
+          error: 'Email already exists',
+        });
+      }
       return res.status(400).json({
         error: errorHandler(error),
       });
     }
     newUser.salt = undefined;
     newUser.hashed_password = undefined;
+    const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET);
+    res.cookie('t', token, { expire: new Date() + 108000 });
     return res.json({
       user,
     });

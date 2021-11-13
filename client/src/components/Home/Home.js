@@ -1,32 +1,49 @@
+import { Typography } from '@material-ui/core';
+import { Box } from '@mui/system';
 import React, { useState, useEffect } from 'react';
-import Modal from '../Modal/Modal';
+import { isAuthenticated } from '../../auth';
 
-const Home = ({ auth }) => {
-  const [modal, setModal] = useState({
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  textAlign: 'center',
+  width: 300,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
+const Home = () => {
+  const [homePage, setHomePage] = useState({
     title: '',
     message: '',
   });
 
   useEffect(() => {
-    if (auth) {
-      setModal({
-        title: 'Congratulations',
-        message: 'You have been successful signed in!',
+    if (isAuthenticated()) {
+      setHomePage({
+        title: 'Welcome to the home page!',
+        message: 'Congratulations, you have been successfully signed in!',
       });
     } else {
-      setModal({
-        title: 'Please signin',
-        message: 'Click "Register" in the menu to signin!',
+      setHomePage({
+        title: 'Welcome to the home page!',
+        message: 'Click "Register" in the menu above to register.',
       });
     }
-  }, [auth]);
+  }, []);
   return (
-    <Modal
-      title={modal.title}
-      message={modal.message}
-      modal={modal && true}
-      setModal={() => setModal(!modal)}
-    />
+    <Box sx={style}>
+      <Typography id="modal-modal-title" variant="h6" component="h2">
+        {homePage.title}
+      </Typography>
+      <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+        {homePage.message}
+      </Typography>
+    </Box>
   );
 };
 

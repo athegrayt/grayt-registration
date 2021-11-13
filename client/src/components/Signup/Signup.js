@@ -9,7 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Avatar, LinearProgress, Typography } from '@material-ui/core';
-import { signup } from '../../auth';
+import { signup, authenticate } from '../../auth';
 import Modal from '../Modal/Modal';
 
 const useStyles = makeStyles((theme) => ({
@@ -55,11 +55,17 @@ const Signup = ({ setNewUser }) => {
     signup(form)
       .then((data) => {
         if (data.error) {
-          setError(data.error);
+          if (Array.isArray(data.error)) {
+            setError(data.error);
+          } else {
+            setError([`${data.error}`]);
+          }
         } else {
-          setForm({ firstName: '', lastName: '', email: '', password: '' });
-          setError(null);
-          setRedirect(true);
+          authenticate(data, () => {
+            setForm({ firstName: '', lastName: '', email: '', password: '' });
+            setError(null);
+            setRedirect(true);
+          });
         }
         setLoading(false);
       })
