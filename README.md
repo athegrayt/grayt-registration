@@ -2,7 +2,7 @@
 
 ![Project Image](./client/src/assets/graytRegistrationGIF.gif)
 
-> Securely reset your password through your email [Black Jeopardy](https://graytcommerce-registration.herokuapp.com/)
+> Securely reset your password through your email [Grayt Registration](https://graytcommerce-registration.herokuapp.com/)
 ---
 
 ### Table of Contents
